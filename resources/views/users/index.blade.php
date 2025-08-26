@@ -10,6 +10,9 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
+        <a href="{{ route('users.create') }}" class="btn btn-success mb-3">Tambah User</a>
+
+
         <div class="card shadow-sm">
             <div class="card-body">
                 <table class="table table-bordered table-striped align-middle">
@@ -19,6 +22,7 @@
                             <th>Nama</th>
                             <th>Email</th>
                             <th>Divisi</th>
+                            <th>Sub Divisi</th>
                             <th>Sub Divisi</th>
                         </tr>
                     </thead>
@@ -34,6 +38,15 @@
                                 </td>
                                 <td>
                                     {{ $user->subDivisis->pluck('nama')->implode(', ') }}
+                                </td>
+                                <td class="d-flex gap-1">
+                                    <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Yakin hapus user ini?')">Hapus</button>
+                                    </form>
                                 </td>
                             </tr>
                         @empty

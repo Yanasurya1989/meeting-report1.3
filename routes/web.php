@@ -41,3 +41,5 @@ Route::resource('users', UserController::class)->only(['index']);
 Route::resource('divisi', DivisiController::class);
 
 Route::resource('subdivisi', SubDivisiController::class);
+
+Route::resource('users', UserController::class);
