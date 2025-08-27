@@ -187,4 +187,93 @@ class MeetingReportController extends Controller
             "Content-Disposition" => "attachment; filename=$filename"
         ]);
     }
+
+    public function edit($id)
+    {
+        $report = MeetingReport::with('pesertaUsers')->findOrFail($id);
+        return view('meeting.edit', compact('report'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'notulen'       => 'required|string', // textarea kirim string
+            'divisi'        => 'required|string',
+            'sub_divisi'    => 'nullable|string',
+            'peserta'       => 'nullable|array',
+            'waktu_rapat'   => 'required|string',
+            'capture_image' => 'nullable|string',
+        ]);
+
+        $report = MeetingReport::findOrFail($id);
+
+        $photoPath = $report->capture_image;
+
+        // handle upload/update foto
+        if ($request->filled('capture_image')) {
+            try {
+                $dataUrl = $request->capture_image;
+                if (str_contains($dataUrl, ',')) {
+                    [, $base64] = explode(',', $dataUrl, 2);
+                } else {
+                    $base64 = $dataUrl;
+                }
+                $binary = base64_decode($base64);
+
+                $image = \Image::make($binary)
+                    ->orientate()
+                    ->resize(800, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    })
+                    ->encode('jpg', 80);
+
+                $filename = 'meeting_' . now()->format('Ymd_His') . '_' . \Str::random(6) . '.jpg';
+                $dir = 'meeting_photos';
+
+                \Storage::disk('public')->put($dir . '/' . $filename, (string) $image);
+                $photoPath = $dir . '/' . $filename;
+            } catch (\Throwable $e) {
+                // kalau gagal proses gambar, biarin aja tetap pakai $photoPath lama
+            }
+        }
+
+        // format waktu rapat
+        $waktuString = preg_replace('/^[A-Za-zÀ-ÿ]+,\s*/u', '', $request->waktu_rapat);
+        $waktuString = $this->convertIndonesianMonthToEnglish($waktuString);
+
+        $waktuRapat = \Carbon\Carbon::createFromFormat('d F Y - H:i:s', $waktuString, 'Asia/Jakarta')
+            ->format('Y-m-d H:i:s');
+
+        // convert notulen string → array (per baris)
+        $notulenArray = array_filter(array_map('trim', preg_split("/\r\n|\n|\r/", $request->notulen)));
+
+        $report->update([
+            'notulen'       => $notulenArray,
+            'divisi'        => $request->divisi,
+            'sub_divisi'    => $request->sub_divisi,
+            'capture_image' => $photoPath,
+            'waktu_rapat'   => $waktuRapat,
+        ]);
+
+        // update peserta rapat
+        $report->pesertaUsers()->sync($request->input('peserta', []));
+
+        return redirect()->route('meeting.index')->with('success', 'Laporan meeting berhasil diperbarui!');
+    }
+
+
+    public function destroy($id)
+    {
+        $report = MeetingReport::findOrFail($id);
+
+        if ($report->capture_image && \Storage::disk('public')->exists($report->capture_image)) {
+            \Storage::disk('public')->delete($report->capture_image);
+        }
+
+        $report->pesertaUsers()->detach();
+        $report->delete();
+
+        return redirect()->route('meeting.index')->with('success', 'Laporan meeting berhasil dihapus!');
+    }
 }

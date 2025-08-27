@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Daftar Laporan Meeting')
+@section('title', 'Yayasan Amal Insan Rabbani')
 
 @section('content')
     <div class="container">
@@ -48,6 +48,7 @@
                         <th>Notulen</th>
                         <th>Waktu Rapat</th>
                         <th>Foto</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -81,13 +82,26 @@
                                     <span class="text-muted">-</span>
                                 @endif
                             </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ route('meeting.edit', $report->id) }}"
+                                        class="btn btn-warning btn-sm">Edit</a>
+                                    <form action="{{ route('meeting.destroy', $report->id) }}" method="POST"
+                                        onsubmit="return confirm('Yakin hapus laporan ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted">Belum ada laporan</td>
+                            <td colspan="8" class="text-center text-muted">Belum ada laporan</td>
                         </tr>
                     @endforelse
                 </tbody>
+
             </table>
         </div>
     </div>
