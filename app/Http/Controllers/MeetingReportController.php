@@ -106,7 +106,7 @@ class MeetingReportController extends Controller
         return str_replace(array_keys($map), array_values($map), $dateString);
     }
 
-    public function index(Request $request)
+    public function indexKembalikanIniKloBawahGagal(Request $request)
     {
         $query = MeetingReport::query();
 
@@ -133,6 +133,39 @@ class MeetingReportController extends Controller
         return view('meeting.index', compact('reports'));
     }
 
+    public function index(Request $request)
+    {
+        $query = MeetingReport::query();
+
+        // Filter tanggal
+        if ($request->filled(['start_date', 'end_date'])) {
+            $start = Carbon::parse($request->start_date)->startOfDay();
+            $end   = Carbon::parse($request->end_date)->endOfDay();
+
+            $query->whereBetween('waktu_rapat', [$start, $end]);
+        }
+
+        // Filter divisi (foreign key id)
+        if ($request->filled('divisi')) {
+            $query->where('divisi', $request->divisi);
+        }
+
+        // Filter sub divisi (foreign key id)
+        if ($request->filled('sub_divisi')) {
+            $query->where('sub_divisi', $request->sub_divisi);
+        }
+
+        // ambil data meeting + relasi
+        $reports = $query->with(['divisiRelasi', 'subDivisiRelasi', 'pesertaUsers'])
+            ->orderBy('waktu_rapat', 'desc')
+            ->get();
+
+        // ambil data dropdown divisi & sub divisi
+        $divisis = \App\Models\Divisi::all();
+        $subDivisis = \App\Models\SubDivisi::all();
+
+        return view('meeting.index', compact('reports', 'divisis', 'subDivisis'));
+    }
 
     public function export(Request $request)
     {
@@ -261,7 +294,6 @@ class MeetingReportController extends Controller
 
         return redirect()->route('meeting.index')->with('success', 'Laporan meeting berhasil diperbarui!');
     }
-
 
     public function destroy($id)
     {

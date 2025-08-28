@@ -16,16 +16,31 @@
                 <label class="form-label">Tanggal Akhir</label>
                 <input type="date" name="end_date" value="{{ request('end_date') }}" class="form-control">
             </div>
+
             <div class="col-md-3">
                 <label class="form-label">Divisi</label>
-                <input type="text" name="divisi" value="{{ request('divisi') }}" class="form-control"
-                    placeholder="Isi Divisi">
+                <select name="divisi" class="form-control">
+                    <option value="">-- Semua --</option>
+                    @foreach ($divisis as $d)
+                        <option value="{{ $d->id }}" {{ request('divisi') == $d->id ? 'selected' : '' }}>
+                            {{ $d->nama }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
+
             <div class="col-md-3">
                 <label class="form-label">Sub Divisi</label>
-                <input type="text" name="sub_divisi" value="{{ request('sub_divisi') }}" class="form-control"
-                    placeholder="Isi Sub Divisi">
+                <select name="sub_divisi" class="form-control">
+                    <option value="">-- Semua --</option>
+                    @foreach ($subDivisis as $s)
+                        <option value="{{ $s->id }}" {{ request('sub_divisi') == $s->id ? 'selected' : '' }}>
+                            {{ $s->nama }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
+
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Filter</button>
                 @if (count($reports) > 0)

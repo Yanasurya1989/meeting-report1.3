@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\SubDivisi;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -21,7 +22,7 @@ class UserController extends Controller
         return view('users.create', compact('subDivisis'));
     }
 
-    public function store(Request $request)
+    public function storeKembalikanIniJikaBawahGagal(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -51,7 +52,7 @@ class UserController extends Controller
         return view('users.edit', compact('user', 'subDivisis', 'selectedSubDivisis'));
     }
 
-    public function update(Request $request, User $user)
+    public function updateKembalikanIniJikaBawahGagal(Request $request, User $user)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -78,5 +79,58 @@ class UserController extends Controller
     {
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name'  => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:users,email'],
+            'password' => ['required', 'min:6'],
+            'sub_divisi_id'   => ['nullable', 'array'],
+            'sub_divisi_id.*' => ['exists:sub_divisis,id'],
+        ]);
+
+        DB::transaction(function () use ($request, $validated) {
+            $user = User::create([
+                'name'     => $validated['name'],
+                'email'    => $validated['email'],
+                'password' => Hash::make($validated['password']), // ✅ Hash password
+            ]);
+
+            if (!empty($validated['sub_divisi_id'])) {
+                $user->subDivisis()->sync($validated['sub_divisi_id']);
+            }
+        });
+
+        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan.');
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name'  => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', "unique:users,email,{$user->id}"],
+            'password' => ['nullable', 'min:6'],
+            'sub_divisi_id'   => ['nullable', 'array'],
+            'sub_divisi_id.*' => ['exists:sub_divisis,id'],
+        ]);
+
+        DB::transaction(function () use ($request, $user, $validated) {
+            $data = [
+                'name'  => $validated['name'],
+                'email' => $validated['email'],
+            ];
+
+            if (!empty($validated['password'])) {
+                $data['password'] = Hash::make($validated['password']); // ✅ Hash password baru
+            }
+
+            $user->update($data);
+
+            $user->subDivisis()->sync($validated['sub_divisi_id'] ?? []);
+        });
+
+        return redirect()->route('users.index')->with('success', 'User berhasil diperbarui.');
     }
 }

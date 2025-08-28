@@ -27,13 +27,16 @@
 
             <div class="mb-3">
                 <label for="sub_divisis" class="form-label">Sub Divisi</label>
-                <select name="sub_divisis[]" class="form-select" multiple>
+                <select name="sub_divisi_id[]" class="form-select" multiple>
                     @foreach ($subDivisis as $sd)
-                        <option value="{{ $sd->id }}" {{ in_array($sd->id, $selectedSubDivisis) ? 'selected' : '' }}>
+                        <option value="{{ $sd->id }}"
+                            {{ in_array($sd->id, old('sub_divisi_id', $selectedSubDivisis)) ? 'selected' : '' }}>
                             {{ $sd->divisi->nama }} - {{ $sd->nama }}
                         </option>
                     @endforeach
                 </select>
+                <small class="text-muted">Bisa pilih lebih dari satu (Ctrl/Command + klik).</small>
+
             </div>
 
             <button type="submit" class="btn btn-primary">Update</button>
