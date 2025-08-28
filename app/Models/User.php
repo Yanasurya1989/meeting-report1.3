@@ -34,4 +34,10 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(SubDivisi::class, 'peserta_sub_divisi', 'user_id', 'sub_divisi_id');
     }
+
+    // User.php
+    public function divisi()
+    {
+        return $this->belongsTo(Divisi::class, 'divisi_id');
+    }
 }
