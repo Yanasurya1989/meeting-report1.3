@@ -20,13 +20,13 @@
 
             {{-- Divisi --}}
             <div class="mb-3">
-                <label class="form-label">Divisi</label>
+                <label class="form-label">Unit</label>
                 <input type="text" name="divisi" class="form-control" value="{{ old('divisi', $report->divisi) }}">
             </div>
 
             {{-- Sub Divisi --}}
             <div class="mb-3">
-                <label class="form-label">Sub Divisi</label>
+                <label class="form-label">Sub Unit</label>
                 <input type="text" name="sub_divisi" class="form-control"
                     value="{{ old('sub_divisi', $report->sub_divisi) }}">
             </div>

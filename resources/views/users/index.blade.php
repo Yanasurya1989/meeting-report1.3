@@ -23,7 +23,9 @@
                             <th>Email</th>
                             <th>Divisi</th>
                             <th>Sub Divisi</th>
-                            <th>Sub Divisi</th>
+                            @if (Auth::user()->divisi?->nama === 'Direktur' || Auth::user()->subDivisis->pluck('divisi.nama')->contains('Direktur'))
+                                <th>Eksien</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -33,21 +35,23 @@
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
                                 <td>
-                                    {{-- Ambil divisi dari relasi subDivisi --}}
                                     {{ $user->subDivisis->pluck('divisi.nama')->unique()->implode(', ') }}
                                 </td>
                                 <td>
                                     {{ $user->subDivisis->pluck('nama')->implode(', ') }}
                                 </td>
-                                <td class="d-flex gap-1">
-                                    <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Yakin hapus user ini?')">Hapus</button>
-                                    </form>
-                                </td>
+                                @if (Auth::user()->divisi?->nama === 'Direktur' || Auth::user()->subDivisis->pluck('divisi.nama')->contains('Direktur'))
+                                    <td class="d-flex gap-1">
+                                        <a href="{{ route('users.edit', $user->id) }}"
+                                            class="btn btn-warning btn-sm">Edit</a>
+                                        <form action="{{ route('users.destroy', $user->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Yakin hapus user ini?')">Hapus</button>
+                                        </form>
+                                    </td>
+                                @endif
                             </tr>
                         @empty
                             <tr>
@@ -55,6 +59,7 @@
                             </tr>
                         @endforelse
                     </tbody>
+
                 </table>
             </div>
         </div>

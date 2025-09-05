@@ -29,7 +29,7 @@
         // kalau pilih divisi
         $('#divisi').on('change', function() {
             let divisiId = $(this).val();
-            $('#sub_divisi').empty().append('<option value="">-- Pilih Sub Divisi --</option>');
+            $('#sub_divisi').empty().append('<option value="">-- Pilih Sub Unit --</option>');
             $('#pesertaContainer').html(
                 '<p class="text-muted">Silakan pilih divisi atau sub divisi terlebih dahulu.</p>');
 

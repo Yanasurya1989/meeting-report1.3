@@ -6,6 +6,8 @@ use App\Http\Controllers\DivisiController;
 use App\Http\Controllers\SubDivisiController;
 use App\Http\Controllers\MeetingReportController;
 
+use App\Http\Controllers\JadwalMeetingController;
+
 Route::get('/', function () {
     return redirect('/login');
 });
@@ -44,4 +46,6 @@ Route::middleware('auth')->group(function () {
     // User
     Route::resource('users', UserController::class);
     Route::resource('users', UserController::class)->only(['index']);
+
+    Route::resource('jadwal', JadwalMeetingController::class);
 });

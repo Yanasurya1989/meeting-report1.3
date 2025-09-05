@@ -40,4 +40,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Divisi::class, 'divisi_id');
     }
+
+    public function isDirekturAtauYayasan()
+    {
+        $divisiUtama = $this->divisi?->nama;
+        $subDivisi = $this->subDivisis->pluck('divisi.nama');
+
+        return in_array($divisiUtama, ['Direktur', 'Yayasan']) ||
+            $subDivisi->contains('Direktur') ||
+            $subDivisi->contains('Yayasan');
+    }
 }

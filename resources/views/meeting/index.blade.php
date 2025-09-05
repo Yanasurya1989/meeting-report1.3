@@ -18,7 +18,7 @@
             </div>
 
             <div class="col-md-3">
-                <label class="form-label">Divisi</label>
+                <label class="form-label">Unit</label>
                 <select name="divisi" class="form-control">
                     <option value="">-- Semua --</option>
                     @foreach ($divisis as $d)
@@ -30,7 +30,7 @@
             </div>
 
             <div class="col-md-3">
-                <label class="form-label">Sub Divisi</label>
+                <label class="form-label">Sub Unit</label>
                 <select name="sub_divisi" class="form-control">
                     <option value="">-- Semua --</option>
                     @foreach ($subDivisis as $s)
@@ -57,8 +57,8 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Divisi</th>
-                        <th>Sub Divisi</th>
+                        <th>Unit</th>
+                        <th>Sub Unit</th>
                         <th>Peserta</th>
                         <th>Notulen</th>
                         <th>Waktu Rapat</th>

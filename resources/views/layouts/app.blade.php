@@ -188,7 +188,14 @@
             <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
         </a>
 
-        <a href="{{ route('meeting.index') }}" class="{{ request()->is('meeting*') ? 'active' : '' }}"
+        <a href="{{ route('jadwal.index') }}" class="{{ request()->is('jadwal*') ? 'active' : '' }}"
+            data-bs-toggle="tooltip" data-bs-placement="right" title="Jadwal Meeting">
+            <i class="bi bi-calendar-event"></i>
+            <span>Jadwal Meeting</span>
+        </a>
+
+        {{-- <a href="{{ route('meeting.index') }}" class="{{ request()->is('meeting*') ? 'active' : '' }}" --}}
+        <a href="{{ route('meeting.index') }}" class="{{ request()->is('meeting') ? 'active' : '' }}"
             data-bs-toggle="tooltip" data-bs-placement="right" title="Daftar Meeting">
             <i class="bi bi-list-check"></i> <span>Daftar Meeting</span>
         </a>
@@ -198,23 +205,25 @@
             <i class="bi bi-calendar-plus"></i> <span>Tambah Meeting</span>
         </a>
 
-        <a href="{{ route('users.index') }}" class="{{ request()->is('users*') ? 'active' : '' }}"
-            data-bs-toggle="tooltip" data-bs-placement="right" title="List User">
-            <i class="bi bi-people"></i> <span>List User</span>
-        </a>
+        @if (Auth::user()->isDirekturAtauYayasan())
+            <a href="{{ route('users.index') }}" class="{{ request()->is('users*') ? 'active' : '' }}"
+                data-bs-toggle="tooltip" data-bs-placement="right" title="List User">
+                <i class="bi bi-people"></i> <span>List User</span>
+            </a>
 
 
-        <a href="{{ route('divisi.index') }}" class="{{ request()->is('divisi*') ? 'active' : '' }}"
-            data-bs-toggle="tooltip" data-bs-placement="right" title="Divisi">
-            <i class="bi bi-diagram-3"></i>
-            <span>Divisi</span>
-        </a>
+            <a href="{{ route('divisi.index') }}" class="{{ request()->is('divisi*') ? 'active' : '' }}"
+                data-bs-toggle="tooltip" data-bs-placement="right" title="Divisi">
+                <i class="bi bi-diagram-3"></i>
+                <span>Unit</span>
+            </a>
 
-        <a href="{{ route('subdivisi.index') }}" class="{{ request()->is('subdivisi*') ? 'active' : '' }}"
-            data-bs-toggle="tooltip" data-bs-placement="right" title="Sub Divisi">
-            <i class="bi bi-diagram-2"></i>
-            <span>Sub Divisi</span>
-        </a>
+            <a href="{{ route('subdivisi.index') }}" class="{{ request()->is('subdivisi*') ? 'active' : '' }}"
+                data-bs-toggle="tooltip" data-bs-placement="right" title="Sub Divisi">
+                <i class="bi bi-diagram-2"></i>
+                <span>Sub Unit</span>
+            </a>
+        @endif
 
     </div>
 

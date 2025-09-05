@@ -45,17 +45,17 @@
 
             {{-- Divisi --}}
             <div class="mb-3">
-                <label for="divisi" class="form-label">Pilih Divisi</label>
+                <label for="divisi" class="form-label">Pilih Unit</label>
                 <select id="divisi" name="divisi" class="form-select">
-                    <option value="">-- Pilih Divisi --</option>
+                    <option value="">-- Pilih Unit --</option>
                 </select>
             </div>
 
             {{-- Sub Divisi --}}
             <div class="mb-3" id="subDivisiWrapper" style="display:none;">
-                <label for="sub_divisi" class="form-label">Pilih Sub Divisi</label>
+                <label for="sub_divisi" class="form-label">Pilih Sub Unit</label>
                 <select id="sub_divisi" name="sub_divisi" class="form-select">
-                    <option value="">-- Pilih Sub Divisi --</option>
+                    <option value="">-- Pilih Sub Unit --</option>
                 </select>
             </div>
 
